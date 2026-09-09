@@ -66,11 +66,11 @@ The core package does not depend on `demixing_model`. A separate benchmark repro
 ### Per-start SciPy parity
 
 ```bash
-python benchmarks/parity_panel.py --dtype float64 --out validation_output/cpu64
-python benchmarks/parity_panel.py --dtype float32 --out validation_output/cpu32
+PYTHONPATH=src python benchmarks/parity_panel.py --dtype float64 --out validation_output/cpu64
+PYTHONPATH=src python benchmarks/parity_panel.py --dtype float32 --out validation_output/cpu32
 
 # CUDA machine, with a normal JAX CUDA installation:
-python benchmarks/parity_panel.py --dtype float32 --out validation_output/gpu32
+PYTHONPATH=src python benchmarks/parity_panel.py --dtype float32 --out validation_output/gpu32
 ```
 
 The parity panel records every start, final parameters, canonical rescored losses, statuses, iteration/evaluation counts, compile time, and steady-state runtime. Any loss discrepancy above `1e-5` should be inspected individually rather than summarized away.
