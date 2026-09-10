@@ -2,18 +2,26 @@
 from __future__ import annotations
 
 import argparse
-import hashlib
 import json
 import platform
 import time
 from pathlib import Path
 
-import jax
-import jax.numpy as jnp
 import numpy as np
 import scipy
 from scipy.optimize import minimize
 
+from benchmark_utils import (
+    configure_jax,
+    file_sha256,
+    set_platform_from_argv,
+    solver_source_fingerprint,
+)
+
+set_platform_from_argv("cpu")
+
+import jax
+import jax.numpy as jnp
 from jax_lbfgsb import BatchedLbfgsb
 
 
@@ -139,25 +147,23 @@ def problems(dtype):
     return out
 
 
-def sha256(path):
-    return hashlib.sha256(Path(path).read_bytes()).hexdigest()
-
-
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--out", default="validation_output/cpu64")
     ap.add_argument("--dtype", choices=["float32", "float64"], default="float64")
     ap.add_argument("--starts", type=int, default=32)
     ap.add_argument("--repeats", type=int, default=5)
+    ap.add_argument("--platform", choices=("auto", "cpu", "gpu"), default="cpu")
+    ap.add_argument("--ftol", type=float, default=2.220446049250313e-9)
+    ap.add_argument("--maxls", type=int, default=20)
     args = ap.parse_args()
 
-    if args.dtype == "float64":
-        jax.config.update("jax_enable_x64", True)
+    devices = configure_jax(args.platform, args.dtype)
     dtype = np.float64 if args.dtype == "float64" else np.float32
     outdir = Path(args.out)
     outdir.mkdir(parents=True, exist_ok=True)
     rng = np.random.default_rng(20260909)
-    solver_path = Path(__file__).parents[1] / "src/jax_lbfgsb/solver.py"
+    solver_sha256, solver_sources = solver_source_fingerprint()
     metadata = {
         "python": platform.python_version(),
         "jax": jax.__version__,
@@ -165,9 +171,15 @@ def main():
         "scipy": scipy.__version__,
         "numpy": np.__version__,
         "dtype": args.dtype,
-        "devices": [str(d) for d in jax.devices()],
+        "requested_platform": args.platform,
+        "devices": devices,
         "seed": 20260909,
-        "solver_sha256": sha256(solver_path),
+        "solver_sha256": solver_sha256,
+        "solver_sources": solver_sources,
+        "benchmark_sha256": file_sha256(Path(__file__)),
+        "benchmark_utils_sha256": file_sha256(Path(__file__).with_name("benchmark_utils.py")),
+        "ftol": args.ftol,
+        "maxls": args.maxls,
         "cuda_visible": any(d.platform == "gpu" for d in jax.devices()),
     }
     (outdir / "metadata.json").write_text(json.dumps(metadata, indent=2))
@@ -177,7 +189,7 @@ def main():
 
     for name, jfun, nfun, ngrad, lo, hi in problems(dtype):
         starts = rng.uniform(lo, hi, size=(args.starts, lo.size)).astype(dtype)
-        solver = BatchedLbfgsb(jfun, lo, hi)
+        solver = BatchedLbfgsb(jfun, lo, hi, ftol=args.ftol, maxls=args.maxls)
         t0 = time.perf_counter()
         solver.compile(jnp.asarray(starts))
         compile_s = time.perf_counter() - t0
@@ -204,6 +216,7 @@ def main():
                     jac=ngrad,
                     method="L-BFGS-B",
                     bounds=list(zip(lo, hi)),
+                    options={"ftol": args.ftol, "maxls": args.maxls},
                 )
                 rep_rows.append((r.x, r.fun, r.status, r.nit, r.nfev, str(r.message)))
             stimes.append(time.perf_counter() - t0)

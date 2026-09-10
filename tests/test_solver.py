@@ -1,7 +1,7 @@
 import numpy as np
 import jax.numpy as jnp
 from scipy.optimize import minimize
-from jax_lbfgsb import BatchedLbfgsb
+from jax_lbfgsb import BatchedLbfgsb, NONFINITE
 
 def scipy_each(fun,starts,lo,hi):
     return [minimize(fun,x,method="L-BFGS-B",bounds=list(zip(lo,hi))) for x in np.asarray(starts)]
@@ -51,3 +51,14 @@ def test_compile_and_independent_counts():
     starts=jnp.array([[.2,-.4],[.3,-.4],[2.,2.]])
     s=BatchedLbfgsb(f,[-3,-3],[3,3],gtol=1e-9); s.compile(starts); r=s.run(starts)
     assert int(r.iterations[0])==0 and int(r.evaluations[0])==1
+
+
+def test_nonfinite_cauchy_point_with_empty_history_terminates():
+    def f(x):
+        return jnp.float32(1e38) * x[0]
+
+    bounds = np.array([np.inf], dtype=np.float32)
+    r = BatchedLbfgsb(f, -bounds, bounds).run(np.zeros((1, 1), dtype=np.float32))
+    assert int(r.status[0]) == int(NONFINITE)
+    assert int(r.iterations[0]) == 0
+    assert int(r.evaluations[0]) == 1

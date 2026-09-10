@@ -26,7 +26,8 @@ pip install -e '.[test]'
 pytest -q
 ```
 
-CPU validation includes the native test suite plus cases adapted from Optim.jl's L-BFGS-B tests. GPU validation remains pending.
+Validation includes the native test suite plus cases adapted from Optim.jl's
+L-BFGS-B tests on both CPU and GPU.
 
 ## API
 
@@ -59,18 +60,25 @@ The solver is agnostic to a `2*C + 1` vector such as
 
 Put condition logic and masks in the objective payload and use a condition-mean loss; autodiff then accumulates all condition contributions into the shared parameter. The test suite includes a synthetic hierarchical recovery case.
 
-The core package does not depend on `demixing_model`. A separate benchmark reproduces the public DM/WNM network architecture and density objective as a workload proxy. Real fitted-checkpoint / empirical WNM parity still needs to be run in the DM environment.
+The core package does not depend on `demixing_model`. A separate benchmark
+reproduces the public DM surface-network architecture and density objective as a
+workload proxy. It can optionally load a trusted `MirrorAwareMu1Predictor`
+checkpoint. Empirical fitted-model parity still needs to be run in the DM
+environment.
 
 ## Validation and benchmarks
 
 ### Per-start SciPy parity
 
 ```bash
-PYTHONPATH=src python benchmarks/parity_panel.py --dtype float64 --out validation_output/cpu64
-PYTHONPATH=src python benchmarks/parity_panel.py --dtype float32 --out validation_output/cpu32
+PYTHONPATH=src python benchmarks/parity_panel.py \
+  --platform cpu --dtype float64 --out validation_output/cpu64
+PYTHONPATH=src python benchmarks/parity_panel.py \
+  --platform cpu --dtype float32 --out validation_output/cpu32
 
 # CUDA machine, with a normal JAX CUDA installation:
-PYTHONPATH=src python benchmarks/parity_panel.py --dtype float32 --out validation_output/gpu32
+PYTHONPATH=src python benchmarks/parity_panel.py \
+  --platform gpu --dtype float32 --maxls 40 --out validation_output/gpu32
 ```
 
 The parity panel records every start, final parameters, canonical rescored losses, statuses, iteration/evaluation counts, compile time, and steady-state runtime. Any loss discrepancy above `1e-5` should be inspected individually rather than summarized away.
@@ -78,8 +86,10 @@ The parity panel records every start, final parameters, canonical rescored losse
 ### CPU multi-start scaling
 
 ```bash
-python benchmarks/scaling_panel.py --dtype float64 --out validation/scaling_cpu64.json
-python benchmarks/scaling_panel.py --dtype float32 --out validation/scaling_cpu32.json
+PYTHONPATH=src python benchmarks/scaling_panel.py \
+  --platform cpu --dtype float64 --out validation/scaling_cpu64.json
+PYTHONPATH=src python benchmarks/scaling_panel.py \
+  --platform cpu --dtype float32 --out validation/scaling_cpu32.json
 ```
 
 This measures steady-state JAX vs sequential SciPy at `1, 4, 8, 16, 32, 64, 128` starts on coupled quadratic and Rosenbrock objectives. See `validation/SCALING_CPU.md` for the current CPU measurements.
@@ -87,18 +97,64 @@ This measures steady-state JAX vs sequential SciPy at `1, 4, 8, 16, 32, 64, 128`
 ### Public DM architecture workload
 
 ```bash
-python benchmarks/dm_public_architecture_scaling.py \
+PYTHONPATH=src python benchmarks/dm_public_architecture_scaling.py \
+  --platform gpu \
   --dtype float32 \
-  --counts 1,4,8,16,32,64,128 \
+  --checkpoint ../demixing_model/pretrained/model_epoch1425_10ktrain_20samples.pkl \
+  --counts 32 --jax-batch-size 1 \
   --repeats 3 \
-  --maxiter 120 \
+  --maxiter 120 --maxls 40 \
   --output dm_public_architecture_scaling_results.json
 ```
 
-This benchmark mirrors the public `demixing_model` predictor architecture, the periodic `180 x 90` surface shape, density-asymmetry collapse, hierarchical 9-parameter layout for four conditions, and `1 - CCC` loss. It uses deterministic random network weights because the trained checkpoint binary was not materialized in the development runtime; therefore it is a **compute/scaling benchmark, not a WNM recovery or fitted-model parity test**. See `validation/DM_PUBLIC_ARCHITECTURE.md`.
+This benchmark mirrors the current `demixing_model` predictor architecture, the
+periodic `180 x 90` surface shape, density-asymmetry collapse, hierarchical
+9-parameter layout for four conditions, and `1 - CCC` loss. Without
+`--checkpoint` it uses deterministic random weights. Even with a trained
+checkpoint, its target is synthetic, so this is a **compute/scaling benchmark,
+not an empirical recovery or fitted-model parity test**. See
+`validation/DM_PUBLIC_ARCHITECTURE.md`.
+
+GPU convolutions are deterministic by default in this benchmark so repeated
+validation runs use the same objective. Pass `--no-deterministic-gpu` only when
+measuring unconstrained throughput. A short run such as `--counts 1 --repeats 1
+--maxiter 20` is a smoke test: its final-loss gap compares two truncated paths
+through a nonconvex float32 objective and is not a solver-parity verdict.
+For the current DM network, avoid a monolithic 32-start accelerator batch; use
+`--jax-batch-size 1` (or benchmark other small chunk sizes) to reuse the compiled
+solver without the large batched-gradient temporary allocation.
+
+### Actual DM WNM likelihood
+
+The integration benchmark uses the packaged K12 WNM, a frozen actual-DM
+recovery dataset, the WNM point-likelihood evaluator, its artifact bounds, and
+the selected 32 deterministic log-space Latin-hypercube starts:
+
+```bash
+PYTHONPATH=src python benchmarks/dm_wnm_likelihood.py \
+  --platform gpu --counts 32 --repeats 3 \
+  --output validation/dm_wnm_likelihood_gpu32.json
+```
+
+It searches in float32, matching the recovery runs, then promotes the checkpoint
+and endpoints for the recovery project's float64 diagnostic rescore. This is
+important on GPU: scalar and batched float32 reductions can send the same start
+down different paths even when their selected winners are equivalent under the
+stable rescore. The input CSV is an external recovery artifact; override
+`--input`, `--checkpoint`, or `--dm-root` when the sibling DM checkout is laid
+out differently. See `validation/DM_WNM_LIKELIHOOD.md`.
+
+Pass `--dtype float64` to search with the promoted WNM arithmetic as well as
+score with it. On the current RTX 5080, the 32-start JAX solve is 9.76x slower
+in float64 (1.687 s versus 0.173 s), but all 32 JAX/SciPy pairs converge and the
+best losses agree to `1.71e-12`. This is a precision/performance diagnostic;
+the selected DM recovery search remains float32.
 
 ## Current validation boundary
 
-CPU tests, SciPy parity panels, and CPU scaling benchmarks are available here. GPU execution and real WNM checkpoint/data recovery remain the outstanding validation steps. Passing toy/public workloads is not a production-readiness claim.
+CPU and GPU tests, portable SciPy parity panels, and one real WNM likelihood
+integration case are available here. The WNM check does not yet cover the full
+recovery panel or the other objective-specific searches, so it is not by itself
+a production-readiness claim.
 
 See `VALIDATION.md` for the current validation summary.

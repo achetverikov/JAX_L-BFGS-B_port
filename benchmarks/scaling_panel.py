@@ -12,12 +12,21 @@ import platform
 import time
 from pathlib import Path
 
-import jax
-import jax.numpy as jnp
 import numpy as np
 import scipy
 from scipy.optimize import minimize
 
+from benchmark_utils import (
+    configure_jax,
+    file_sha256,
+    set_platform_from_argv,
+    solver_source_fingerprint,
+)
+
+set_platform_from_argv("cpu")
+
+import jax
+import jax.numpy as jnp
 from jax_lbfgsb import BatchedLbfgsb
 
 COUNTS = (1, 4, 8, 16, 32, 64, 128)
@@ -143,19 +152,26 @@ def main():
     ap.add_argument("--dtype", choices=("float32", "float64"), default="float64")
     ap.add_argument("--repeats", type=int, default=3)
     ap.add_argument("--out", default="validation/scaling_cpu.json")
+    ap.add_argument("--platform", choices=("cpu", "gpu"), default="cpu")
     args = ap.parse_args()
 
-    jax.config.update("jax_enable_x64", args.dtype == "float64")
+    devices = configure_jax(args.platform, args.dtype)
     dtype = np.float64 if args.dtype == "float64" else np.float32
     rows = []
     for problem in (_coupled_quadratic(dtype), _rosenbrock(dtype)):
         rows.extend(_run_problem(problem, dtype, args.repeats))
 
+    solver_sha256, solver_sources = solver_source_fingerprint()
     payload = {
         "python": platform.python_version(),
         "jax": jax.__version__,
         "scipy": scipy.__version__,
-        "device": [str(d) for d in jax.devices()],
+        "requested_platform": args.platform,
+        "devices": devices,
+        "solver_sha256": solver_sha256,
+        "solver_sources": solver_sources,
+        "benchmark_sha256": file_sha256(Path(__file__)),
+        "benchmark_utils_sha256": file_sha256(Path(__file__).with_name("benchmark_utils.py")),
         "dtype": args.dtype,
         "repeats": args.repeats,
         "rows": rows,

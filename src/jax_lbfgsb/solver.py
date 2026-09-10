@@ -65,11 +65,21 @@ def _single_solver(loss_fn, value_and_grad, x0, lower, upper, *, maxcor, ftol, g
         z = lax.cond((st.count > 0) & jnp.any(free), do_subspace, lambda _: xcp, None)
         compact_ok = jnp.all(jnp.isfinite(xcp)) & jnp.all(jnp.isfinite(z))
 
-        # Numerical compact-representation failure: refresh history and retry.
+        # Numerical compact-representation failure: refresh non-empty history
+        # once.  If the history is already empty, retrying cannot change the
+        # Cauchy point and would leave the outer while-loop spinning forever.
         def refresh(_):
-            return st._replace(
-                s_hist=jnp.zeros_like(st.s_hist), y_hist=jnp.zeros_like(st.y_hist),
-                count=jnp.int32(0), theta=jnp.array(1.0, dtype),
+            def clear_history(_):
+                return st._replace(
+                    s_hist=jnp.zeros_like(st.s_hist), y_hist=jnp.zeros_like(st.y_hist),
+                    count=jnp.int32(0), theta=jnp.array(1.0, dtype),
+                )
+
+            return lax.cond(
+                st.count > 0,
+                clear_history,
+                lambda _: st._replace(status=NONFINITE),
+                None,
             )
 
         def search_and_update(_):
@@ -107,8 +117,9 @@ def _single_solver(loss_fn, value_and_grad, x0, lower, upper, *, maxcor, ftol, g
                 nit = st.iterations + 1
                 pgn = projected_gradient_norm(xn, gn, lower, upper)
                 rel = (st.f - fn) / jnp.maximum(jnp.maximum(jnp.abs(st.f), jnp.abs(fn)), 1.0)
+                ftol_converged = (rel >= 0.0) & (rel <= ftol)
                 status = jnp.where(pgn <= gtol, CONVERGED_PGTOL,
-                         jnp.where(rel <= ftol, CONVERGED_FTOL,
+                         jnp.where(ftol_converged, CONVERGED_FTOL,
                          jnp.where(evals >= maxfun, EVALUATION_LIMIT,
                          jnp.where(nit >= maxiter, ITERATION_LIMIT, RUNNING))))
                 s = xn - st.x
