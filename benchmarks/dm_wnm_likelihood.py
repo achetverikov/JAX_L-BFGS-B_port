@@ -380,7 +380,7 @@ def main(argv=None):
     parser.add_argument(
         "--checkpoint",
         type=Path,
-        default=DM_ROOT / "pretrained/wnm_k12_100samples.pkl",
+        default=DM_ROOT / "pretrained/current_wnm_k12_100samples.pkl",
     )
     parser.add_argument("--subject", default=DEFAULT_SUBJECT)
     parser.add_argument("--dtype", choices=("float32", "float64"), default="float32")

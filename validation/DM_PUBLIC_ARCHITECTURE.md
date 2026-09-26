@@ -39,7 +39,7 @@ statuses and signed loss gap, before interpreting the endpoint difference.
 PYTHONPATH=src python benchmarks/dm_public_architecture_scaling.py \
   --platform gpu --dtype float32 --counts 32 --jax-batch-size 1 \
   --repeats 3 --maxiter 120 --maxls 40 \
-  --checkpoint ../demixing_model/pretrained/model_epoch1425_10ktrain_20samples.pkl \
+  --checkpoint ../demixing_model/pretrained/surface_legacy_epoch1425_10ktrain_20samples.pkl \
   --output validation/dm_public_architecture_gpu.json
 ```
 

@@ -4,7 +4,7 @@
 surface-network workload. It imports the current DM implementation instead of
 copying the WNM equations. The benchmark uses:
 
-- `pretrained/wnm_k12_100samples.pkl`;
+- `pretrained/current_wnm_k12_100samples.pkl`;
 - the frozen actual-DM `ordinary_1_seed0_n450` recovery dataset;
 - continuous WNM point negative log likelihood;
 - artifact bounds of 2.5--200 degrees for both feature SDs and 5--200 degrees

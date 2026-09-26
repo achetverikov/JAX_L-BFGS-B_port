@@ -100,7 +100,7 @@ This measures steady-state JAX vs sequential SciPy at `1, 4, 8, 16, 32, 64, 128`
 PYTHONPATH=src python benchmarks/dm_public_architecture_scaling.py \
   --platform gpu \
   --dtype float32 \
-  --checkpoint ../demixing_model/pretrained/model_epoch1425_10ktrain_20samples.pkl \
+  --checkpoint ../demixing_model/pretrained/surface_legacy_epoch1425_10ktrain_20samples.pkl \
   --counts 32 --jax-batch-size 1 \
   --repeats 3 \
   --maxiter 120 --maxls 40 \
