@@ -2,6 +2,17 @@
 
 Standalone, dimension-agnostic JAX implementation of **L-BFGS-B**, designed to optimize many independent starts as one `vmap`/`jit` accelerator batch. It does not replace L-BFGS-B with clipped L-BFGS, a parameter transform, or a barrier objective.
 
+Use it for differentiable scalar objectives with box-constrained parameters,
+especially multi-start searches where the same objective and data are reused.
+Gradients come from JAX autodiff, and each start has its own optimizer history
+and stopping status. The core package requires only JAX and NumPy; SciPy is
+used for validation. It runs on the devices supported by your JAX installation.
+
+Start with the [quick start](#quick-start), then see the
+[API reference](docs/API.md) for input contracts, options, result fields and
+termination codes. [VALIDATION.md](VALIDATION.md) records the measured parity
+and known limits.
+
 ## Algorithm implemented
 
 Each start has independent state and follows the L-BFGS-B structure:
@@ -16,20 +27,23 @@ Each start has independent state and follows the L-BFGS-B structure:
 
 The generalized Cauchy implementation recomputes compact Hessian-vector products at breakpoints instead of using the Fortran incremental recurrence. This is shape-static for JAX and may differ in floating-point ordering, so differences are exposed to parity testing rather than hidden.
 
-## Install and CPU tests
+## Installation
+
+Requires Python 3.11 or newer. From this repository's root:
 
 ```bash
 python -m venv .venv
 . .venv/bin/activate
-pip install -U pip
-pip install -e '.[test]'
-pytest -q
+python -m pip install -e .
 ```
 
-Validation includes the native test suite plus cases adapted from Optim.jl's
-L-BFGS-B tests on both CPU and GPU.
+If you already have a working JAX/CUDA environment, activate it and use the
+editable install command directly. The package does not select a CUDA version
+or install CUDA extras; use your environment's compatible JAX accelerator
+installation. The sibling DM checkout is needed only for the DM integration
+benchmarks, not for the solver or quick start.
 
-## API
+## Quick start
 
 ```python
 import jax.numpy as jnp
@@ -46,9 +60,71 @@ target = jnp.array([0.2, 0.7])
 
 search.compile(starts, target)  # optional: compile for these shapes first
 result = search.run(starts, target)
+
+best = result.winner_index()
+print(result.x[best])        # approximately [0.2, 0.7]
+print(result.fun[best])      # approximately zero
+print(result.messages())     # one termination message per start
 ```
 
 `result` preserves start order and contains initial/final points and losses, status, iteration/evaluation counts, projected-gradient norm, final bound activity, and boundary-hit diagnostics. `result.winner_index()` chooses the finite minimum loss, breaking exact ties by start order.
+
+Check the selected start's status before accepting it: winner selection includes
+finite losses from unsuccessful runs too. See the [result reference](docs/API.md#results).
+
+A complete example with an optimum on a bound is available in
+[examples/quadratic.py](examples/quadratic.py):
+
+```bash
+python examples/quadratic.py
+```
+
+It should find approximately `[0.2, 2.0]`, with loss `1.0` and the second upper
+bound active, for both starts.
+
+## Batching, precision and performance
+
+- Pass floating-point starts shaped `(n_starts, n_parameters)`. Bounds are
+  vectors of length `n_parameters`; out-of-bounds starts are clipped.
+- Write a scalar objective with JAX operations. All starts receive the same
+  payload arguments; payload arrays are not mapped along their first axis.
+- Float32 is JAX's usual default. Enable `jax_enable_x64` before creating arrays
+  and supply float64 inputs for higher precision. Choose tolerances appropriate
+  to the dtype and objective scale.
+- Compilation is specific to shapes and dtypes. Reuse a solver and fixed batch
+  shapes to amortize it. Synchronize with `result.fun.block_until_ready()` when
+  timing device execution.
+- Large batches of expensive objectives can exhaust accelerator memory. Run
+  starts in smaller sequential chunks when needed; the last chunk may require
+  another compilation if its shape differs. Batched execution is not always
+  faster than sequential SciPy, and float64 GPU performance depends on hardware.
+
+The [API reference](docs/API.md) explains stopping thresholds, compilation and
+the shared-payload contract in detail.
+
+## Repository map and development
+
+| Path | Contents |
+| --- | --- |
+| `src/jax_lbfgsb/solver.py` | Public solver and batched optimization loop. |
+| `src/jax_lbfgsb/core.py` | Result records, projected gradients, Cauchy point and subspace calculations. |
+| `src/jax_lbfgsb/line_search.py` | More-Thuente line-search implementation. |
+| `examples/` | Small standalone usage example. |
+| `tests/` | Solver, Optim.jl-inspired and regression tests. |
+| `benchmarks/` | SciPy parity, scaling and DM integration scripts. |
+| `validation/` | Recorded benchmark reports. |
+
+Install test dependencies and run the suite on CPU:
+
+```bash
+python -m pip install -e '.[test]'
+JAX_PLATFORMS=cpu pytest -q
+```
+
+On a configured CUDA machine, run `JAX_PLATFORMS=cuda pytest -q` separately.
+The test configuration enables float64. Validation includes the native test
+suite plus cases adapted from Optim.jl's L-BFGS-B tests. Run GPU checks one at
+a time, and put temporary benchmark outputs and caches under `/tmp`.
 
 ## Hierarchical objectives / DM shape
 

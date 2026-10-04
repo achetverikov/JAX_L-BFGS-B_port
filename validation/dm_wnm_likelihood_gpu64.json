@@ -1,0 +1,1148 @@
+{
+  "protocol": "dm_wnm_likelihood_lbfgsb_parity_v2",
+  "python": "3.12.3",
+  "jax": "0.10.1.dev20260910",
+  "scipy": "1.17.1",
+  "dtype": "float64",
+  "float64_rescore": {
+    "enabled": false,
+    "reason": "search already uses promoted float64 WNM"
+  },
+  "requested_platform": "gpu",
+  "devices": [
+    "cuda:0"
+  ],
+  "objective": "WNM continuous point negative log-likelihood",
+  "search": "log-space L-BFGS-B with deterministic Latin-hypercube starts",
+  "subject": {
+    "subject": "ordinary_1_seed0_n450",
+    "case": "ordinary_1",
+    "regime": "ordinary_asymmetric",
+    "split": "development",
+    "response_seed": 0,
+    "n_trials": 450,
+    "truth": [
+      10.0,
+      30.0,
+      60.0
+    ]
+  },
+  "input": "/workspaces/demixing_model/results/continuous_density_4.1q/recovery/single_condition_n100/surface_baseline_input.csv",
+  "input_sha256": "4e87402b4b45983ea970c37b76dc8ab30dab237435513e1237abe5fd4e42a01e",
+  "checkpoint": "/workspaces/demixing_model/demixing_model/pretrained/wnm_k12_100samples.pkl",
+  "checkpoint_sha256": "848d9f2775e2d8dfb809037225ec80433ce56fcfa1a0284bb56513ca6ccc0d0e",
+  "natural_bounds": [
+    [
+      2.5,
+      200.0
+    ],
+    [
+      2.5,
+      200.0
+    ],
+    [
+      5.0,
+      200.0
+    ]
+  ],
+  "seed": 0,
+  "repeats": 3,
+  "maxiter": 500,
+  "maxfun": 15000,
+  "maxls": 20,
+  "ftol": 1e-09,
+  "gtol": 1e-06,
+  "requested_jax_batch_size": null,
+  "solver_sha256": "d016017f7cba27404b1eadb7abba2ca916b3c9dc54af90c7119533d5edca6762",
+  "solver_sources": [
+    "src/jax_lbfgsb/__init__.py",
+    "src/jax_lbfgsb/core.py",
+    "src/jax_lbfgsb/line_search.py",
+    "src/jax_lbfgsb/solver.py"
+  ],
+  "benchmark_sha256": "376b9ceb917cd003ced6fa736c53ecf55c11db2566d1677d0ed5ef9a15e204bb",
+  "benchmark_utils_sha256": "86c72bb967f3c887951f67b4da5a0d774ac6c34a00eeed8b86a8abb09c34eb68",
+  "dm_source_sha256": {
+    "continuous_density/wrapped_mixture_model.py": "cf985c3a5d3c3270702c1607c91017a492403b4eca5e0f5bea67539d651e0645",
+    "model_fit_to_data/continuous_optimizer.py": "8b6fd29e3ae26db17685992d47d3082c4c906b6d6d470fd34a734da24a4f641a",
+    "model_fit_to_data/likelihood_search.py": "ee1aea88f5dc01ff22bb6a701b694872f2982355a45d3412ecbc191794d22bd6",
+    "model_fit_to_data/wnm_scoring.py": "15b9cc5fd9afb833df3cd5090f9a4d3771dbe48a9a5d1ab20fe61a8410766573",
+    "shared/prediction.py": "5188c1d1511862a379a1f16811a451ae5a053e0ab86d5e4cac4c190f527233af",
+    "shared/surrogate.py": "5e8e3f7ec1ba1809ca47e566010f8c85ebd98c3286abac1df0e9264f392fd7aa"
+  },
+  "rows": [
+    {
+      "dtype": "float64",
+      "realized_loss_dtype": "float64",
+      "n_starts": 32,
+      "jax_batch_size": 32,
+      "compile_seconds": 11.843502353003714,
+      "jax_seconds": 1.6874139519932214,
+      "scipy_seconds": 2.634873085989966,
+      "speedup": 1.5614858955489723,
+      "within_1e-5": 1.0,
+      "within_1e-3": 1.0,
+      "jax_no_worse_1e-3": 1.0,
+      "scipy_no_worse_1e-3": 1.0,
+      "median_signed_loss_difference": 0.0,
+      "max_absolute_loss_difference": 2.112801666953601e-08,
+      "jax_converged_fraction": 1.0,
+      "scipy_converged_fraction": 1.0,
+      "both_converged_fraction": 1.0,
+      "jax_evaluations": 586,
+      "scipy_evaluations": 585,
+      "jax_winner_index": 1,
+      "scipy_winner_index": 14,
+      "same_winner": false,
+      "jax_best_loss": 937.47381392776,
+      "scipy_best_loss": 937.4738139277583,
+      "best_loss_difference": 1.7053025658242404e-12,
+      "jax_best_parameters": [
+        10.18720966095623,
+        30.247901125785766,
+        57.242778851179274
+      ],
+      "scipy_best_parameters": [
+        10.187210265912823,
+        30.247914574949796,
+        57.24276225778476
+      ],
+      "jax_times_seconds": [
+        1.640171103994362,
+        1.7269697559968336,
+        1.6874139519932214
+      ],
+      "scipy_times_seconds": [
+        8.865307147003477,
+        2.634873085989966,
+        2.5829493240016745
+      ],
+      "per_start": [
+        {
+          "start_index": 0,
+          "initial_parameters": [
+            3.592299220746233,
+            109.78860023510703,
+            107.14887906550307
+          ],
+          "initial_loss": 1002.0387834295825,
+          "jax_parameters": [
+            6.83679282880445,
+            100.89027082772482,
+            57.182835058675316
+          ],
+          "jax_loss": 960.5874788988519,
+          "jax_status": 1,
+          "jax_message": "CONVERGENCE: REL_REDUCTION_OF_F <= FTOL",
+          "jax_iterations": 9,
+          "jax_evaluations": 12,
+          "scipy_parameters": [
+            6.836792633097095,
+            100.89030264583734,
+            57.182841142098184
+          ],
+          "scipy_loss": 960.5874788988519,
+          "scipy_status": 0,
+          "scipy_success": true,
+          "scipy_message": "CONVERGENCE: RELATIVE REDUCTION OF F <= FACTR*EPSMCH",
+          "scipy_iterations": 9,
+          "scipy_evaluations": 12,
+          "signed_loss_difference": 0.0,
+          "absolute_loss_difference": 0.0
+        },
+        {
+          "start_index": 1,
+          "initial_parameters": [
+            12.266625474602716,
+            3.2854246735144246,
+            15.041445395311522
+          ],
+          "initial_loss": 1013.6980983384803,
+          "jax_parameters": [
+            10.18720966095623,
+            30.247901125785766,
+            57.242778851179274
+          ],
+          "jax_loss": 937.47381392776,
+          "jax_status": 1,
+          "jax_message": "CONVERGENCE: REL_REDUCTION_OF_F <= FTOL",
+          "jax_iterations": 15,
+          "jax_evaluations": 22,
+          "scipy_parameters": [
+            10.187208726775104,
+            30.247903394123334,
+            57.24275854923049
+          ],
+          "scipy_loss": 937.4738139277957,
+          "scipy_status": 0,
+          "scipy_success": true,
+          "scipy_message": "CONVERGENCE: RELATIVE REDUCTION OF F <= FACTR*EPSMCH",
+          "scipy_iterations": 15,
+          "scipy_evaluations": 22,
+          "signed_loss_difference": -3.5697667044587433e-11,
+          "absolute_loss_difference": 3.5697667044587433e-11
+        },
+        {
+          "start_index": 2,
+          "initial_parameters": [
+            80.82523286007569,
+            5.645897402018425,
+            55.0547966187951
+          ],
+          "initial_loss": 1795.350995284391,
+          "jax_parameters": [
+            6.836809617106159,
+            100.89049312164197,
+            57.18215782195956
+          ],
+          "jax_loss": 960.587478912047,
+          "jax_status": 1,
+          "jax_message": "CONVERGENCE: REL_REDUCTION_OF_F <= FTOL",
+          "jax_iterations": 12,
+          "jax_evaluations": 18,
+          "scipy_parameters": [
+            6.836809654747817,
+            100.89052266670355,
+            57.1821632398723
+          ],
+          "scipy_loss": 960.5874789117835,
+          "scipy_status": 0,
+          "scipy_success": true,
+          "scipy_message": "CONVERGENCE: RELATIVE REDUCTION OF F <= FACTR*EPSMCH",
+          "scipy_iterations": 12,
+          "scipy_evaluations": 18,
+          "signed_loss_difference": 2.6352608983870596e-10,
+          "absolute_loss_difference": 2.6352608983870596e-10
+        },
+        {
+          "start_index": 3,
+          "initial_parameters": [
+            50.8333165122284,
+            15.791737597482697,
+            119.88587023461876
+          ],
+          "initial_loss": 1599.976788575777,
+          "jax_parameters": [
+            10.187209514195352,
+            30.247996327654064,
+            57.24276269286085
+          ],
+          "jax_loss": 937.4738139282858,
+          "jax_status": 1,
+          "jax_message": "CONVERGENCE: REL_REDUCTION_OF_F <= FTOL",
+          "jax_iterations": 13,
+          "jax_evaluations": 20,
+          "scipy_parameters": [
+            10.18720900806758,
+            30.247995569399784,
+            57.24275094890976
+          ],
+          "scipy_loss": 937.4738139282791,
+          "scipy_status": 0,
+          "scipy_success": true,
+          "scipy_message": "CONVERGENCE: RELATIVE REDUCTION OF F <= FACTR*EPSMCH",
+          "scipy_iterations": 13,
+          "scipy_evaluations": 20,
+          "signed_loss_difference": 6.707523425575346e-12,
+          "absolute_loss_difference": 6.707523425575346e-12
+        },
+        {
+          "start_index": 4,
+          "initial_parameters": [
+            11.2457244867839,
+            49.193319675019225,
+            20.61494255008254
+          ],
+          "initial_loss": 977.3421200761188,
+          "jax_parameters": [
+            10.187208338051565,
+            30.24791105863233,
+            57.242714122553195
+          ],
+          "jax_loss": 937.4738139278312,
+          "jax_status": 1,
+          "jax_message": "CONVERGENCE: REL_REDUCTION_OF_F <= FTOL",
+          "jax_iterations": 13,
+          "jax_evaluations": 16,
+          "scipy_parameters": [
+            10.18720994077306,
+            30.247911159989343,
+            57.24271383778895
+          ],
+          "scipy_loss": 937.4738139277831,
+          "scipy_status": 0,
+          "scipy_success": true,
+          "scipy_message": "CONVERGENCE: RELATIVE REDUCTION OF F <= FACTR*EPSMCH",
+          "scipy_iterations": 13,
+          "scipy_evaluations": 16,
+          "signed_loss_difference": 4.808953235624358e-11,
+          "absolute_loss_difference": 4.808953235624358e-11
+        },
+        {
+          "start_index": 5,
+          "initial_parameters": [
+            4.748938110204485,
+            82.09402811047354,
+            5.2437430378805985
+          ],
+          "initial_loss": 1918.8591577648424,
+          "jax_parameters": [
+            14.127491377623144,
+            95.7040349402561,
+            4.999999999999999
+          ],
+          "jax_loss": 1035.034759228828,
+          "jax_status": 1,
+          "jax_message": "CONVERGENCE: REL_REDUCTION_OF_F <= FTOL",
+          "jax_iterations": 14,
+          "jax_evaluations": 19,
+          "scipy_parameters": [
+            14.12752392371789,
+            95.70229238944627,
+            4.999999999999999
+          ],
+          "scipy_loss": 1035.034759249956,
+          "scipy_status": 0,
+          "scipy_success": true,
+          "scipy_message": "CONVERGENCE: RELATIVE REDUCTION OF F <= FACTR*EPSMCH",
+          "scipy_iterations": 14,
+          "scipy_evaluations": 19,
+          "signed_loss_difference": -2.112801666953601e-08,
+          "absolute_loss_difference": 2.112801666953601e-08
+        },
+        {
+          "start_index": 6,
+          "initial_parameters": [
+            144.9770099948657,
+            4.053533027770536,
+            155.52334422723538
+          ],
+          "initial_loss": 2579.277320408644,
+          "jax_parameters": [
+            10.187211566316018,
+            30.24789304665902,
+            57.24275142784453
+          ],
+          "jax_loss": 937.4738139277893,
+          "jax_status": 1,
+          "jax_message": "CONVERGENCE: REL_REDUCTION_OF_F <= FTOL",
+          "jax_iterations": 13,
+          "jax_evaluations": 16,
+          "scipy_parameters": [
+            10.18721188560118,
+            30.24789311423307,
+            57.24275985887563
+          ],
+          "scipy_loss": 937.4738139277817,
+          "scipy_status": 0,
+          "scipy_success": true,
+          "scipy_message": "CONVERGENCE: RELATIVE REDUCTION OF F <= FACTR*EPSMCH",
+          "scipy_iterations": 13,
+          "scipy_evaluations": 16,
+          "signed_loss_difference": 7.503331289626658e-12,
+          "absolute_loss_difference": 7.503331289626658e-12
+        },
+        {
+          "start_index": 7,
+          "initial_parameters": [
+            24.57129265833404,
+            28.555414417585528,
+            60.49054925844467
+          ],
+          "initial_loss": 1278.577931996348,
+          "jax_parameters": [
+            10.187211875898527,
+            30.24790424768928,
+            57.24288757059532
+          ],
+          "jax_loss": 937.473813928055,
+          "jax_status": 1,
+          "jax_message": "CONVERGENCE: REL_REDUCTION_OF_F <= FTOL",
+          "jax_iterations": 11,
+          "jax_evaluations": 13,
+          "scipy_parameters": [
+            10.18721081649233,
+            30.247900496771738,
+            57.242895351027656
+          ],
+          "scipy_loss": 937.4738139280554,
+          "scipy_status": 0,
+          "scipy_success": true,
+          "scipy_message": "CONVERGENCE: RELATIVE REDUCTION OF F <= FACTR*EPSMCH",
+          "scipy_iterations": 11,
+          "scipy_evaluations": 13,
+          "signed_loss_difference": -3.410605131648481e-13,
+          "absolute_loss_difference": 3.410605131648481e-13
+        },
+        {
+          "start_index": 8,
+          "initial_parameters": [
+            61.505747562990884,
+            140.3704009680737,
+            14.044317036367962
+          ],
+          "initial_loss": 1511.284935649207,
+          "jax_parameters": [
+            10.187212402780322,
+            30.247895083094505,
+            57.2427445075958
+          ],
+          "jax_loss": 937.473813927774,
+          "jax_status": 1,
+          "jax_message": "CONVERGENCE: REL_REDUCTION_OF_F <= FTOL",
+          "jax_iterations": 17,
+          "jax_evaluations": 21,
+          "scipy_parameters": [
+            10.187214732585034,
+            30.24789618195622,
+            57.24277667629799
+          ],
+          "scipy_loss": 937.4738139278484,
+          "scipy_status": 0,
+          "scipy_success": true,
+          "scipy_message": "CONVERGENCE: RELATIVE REDUCTION OF F <= FACTR*EPSMCH",
+          "scipy_iterations": 17,
+          "scipy_evaluations": 21,
+          "signed_loss_difference": -7.435119186993688e-11,
+          "absolute_loss_difference": 7.435119186993688e-11
+        },
+        {
+          "start_index": 9,
+          "initial_parameters": [
+            5.79166963891962,
+            127.88647964801015,
+            5.855019959866345
+          ],
+          "initial_loss": 1557.1733720097573,
+          "jax_parameters": [
+            10.187203281386541,
+            30.247904379870565,
+            57.242775335718584
+          ],
+          "jax_loss": 937.4738139281139,
+          "jax_status": 1,
+          "jax_message": "CONVERGENCE: REL_REDUCTION_OF_F <= FTOL",
+          "jax_iterations": 13,
+          "jax_evaluations": 17,
+          "scipy_parameters": [
+            10.187203381835761,
+            30.247909903340293,
+            57.242774458391764
+          ],
+          "scipy_loss": 937.4738139281019,
+          "scipy_status": 0,
+          "scipy_success": true,
+          "scipy_message": "CONVERGENCE: RELATIVE REDUCTION OF F <= FACTR*EPSMCH",
+          "scipy_iterations": 13,
+          "scipy_evaluations": 17,
+          "signed_loss_difference": 1.2050804798491299e-11,
+          "absolute_loss_difference": 1.2050804798491299e-11
+        },
+        {
+          "start_index": 10,
+          "initial_parameters": [
+            32.45907691227138,
+            7.186769584776389,
+            11.942267012656847
+          ],
+          "initial_loss": 1216.0285692264506,
+          "jax_parameters": [
+            10.187189354322312,
+            30.248042672210328,
+            57.24356876164578
+          ],
+          "jax_loss": 937.4738139385423,
+          "jax_status": 1,
+          "jax_message": "CONVERGENCE: REL_REDUCTION_OF_F <= FTOL",
+          "jax_iterations": 13,
+          "jax_evaluations": 16,
+          "scipy_parameters": [
+            10.18718843869441,
+            30.248041726468955,
+            57.24354341797948
+          ],
+          "scipy_loss": 937.4738139382929,
+          "scipy_status": 0,
+          "scipy_success": true,
+          "scipy_message": "CONVERGENCE: RELATIVE REDUCTION OF F <= FACTR*EPSMCH",
+          "scipy_iterations": 13,
+          "scipy_evaluations": 16,
+          "signed_loss_difference": 2.4942892196122557e-10,
+          "absolute_loss_difference": 2.4942892196122557e-10
+        },
+        {
+          "start_index": 11,
+          "initial_parameters": [
+            94.50271056829635,
+            66.25474431910799,
+            33.86370278687103
+          ],
+          "initial_loss": 2154.339890958252,
+          "jax_parameters": [
+            10.187212785733582,
+            30.24785758805651,
+            57.24280027770276
+          ],
+          "jax_loss": 937.4738139279293,
+          "jax_status": 1,
+          "jax_message": "CONVERGENCE: REL_REDUCTION_OF_F <= FTOL",
+          "jax_iterations": 18,
+          "jax_evaluations": 22,
+          "scipy_parameters": [
+            10.187212018616153,
+            30.24785270641418,
+            57.24279860218672
+          ],
+          "scipy_loss": 937.47381392797,
+          "scipy_status": 0,
+          "scipy_success": true,
+          "scipy_message": "CONVERGENCE: RELATIVE REDUCTION OF F <= FACTR*EPSMCH",
+          "scipy_iterations": 18,
+          "scipy_evaluations": 22,
+          "signed_loss_difference": -4.069988790433854e-11,
+          "absolute_loss_difference": 4.069988790433854e-11
+        },
+        {
+          "start_index": 12,
+          "initial_parameters": [
+            3.933736485772332,
+            22.715391453964557,
+            9.812079242366961
+          ],
+          "initial_loss": 2290.2438096599844,
+          "jax_parameters": [
+            10.18722007726287,
+            30.2479716511851,
+            57.24299278563972
+          ],
+          "jax_loss": 937.4738139294147,
+          "jax_status": 1,
+          "jax_message": "CONVERGENCE: REL_REDUCTION_OF_F <= FTOL",
+          "jax_iterations": 11,
+          "jax_evaluations": 13,
+          "scipy_parameters": [
+            10.187221497976445,
+            30.247971619598427,
+            57.24298584119072
+          ],
+          "scipy_loss": 937.4738139296884,
+          "scipy_status": 0,
+          "scipy_success": true,
+          "scipy_message": "CONVERGENCE: RELATIVE REDUCTION OF F <= FACTR*EPSMCH",
+          "scipy_iterations": 11,
+          "scipy_evaluations": 13,
+          "signed_loss_difference": -2.736442183959298e-10,
+          "absolute_loss_difference": 2.736442183959298e-10
+        },
+        {
+          "start_index": 13,
+          "initial_parameters": [
+            162.54748682706827,
+            6.282392254907279,
+            64.21985048270362
+          ],
+          "initial_loss": 2599.0385456122567,
+          "jax_parameters": [
+            10.187239783579699,
+            30.24786516891528,
+            57.24224261678277
+          ],
+          "jax_loss": 937.4738139337488,
+          "jax_status": 1,
+          "jax_message": "CONVERGENCE: REL_REDUCTION_OF_F <= FTOL",
+          "jax_iterations": 14,
+          "jax_evaluations": 20,
+          "scipy_parameters": [
+            10.187214126905724,
+            30.247890140085158,
+            57.24275360068879
+          ],
+          "scipy_loss": 937.4738139277924,
+          "scipy_status": 0,
+          "scipy_success": true,
+          "scipy_message": "CONVERGENCE: RELATIVE REDUCTION OF F <= FACTR*EPSMCH",
+          "scipy_iterations": 15,
+          "scipy_evaluations": 19,
+          "signed_loss_difference": 5.956394488748629e-09,
+          "absolute_loss_difference": 5.956394488748629e-09
+        },
+        {
+          "start_index": 14,
+          "initial_parameters": [
+            8.445234951187663,
+            4.908870857123637,
+            6.598579289710724
+          ],
+          "initial_loss": 1202.7582453765885,
+          "jax_parameters": [
+            10.187209917278674,
+            30.24791659578935,
+            57.24277353135989
+          ],
+          "jax_loss": 937.4738139277626,
+          "jax_status": 1,
+          "jax_message": "CONVERGENCE: REL_REDUCTION_OF_F <= FTOL",
+          "jax_iterations": 12,
+          "jax_evaluations": 19,
+          "scipy_parameters": [
+            10.187210265912823,
+            30.247914574949796,
+            57.24276225778476
+          ],
+          "scipy_loss": 937.4738139277583,
+          "scipy_status": 0,
+          "scipy_success": true,
+          "scipy_message": "CONVERGENCE: RELATIVE REDUCTION OF F <= FACTR*EPSMCH",
+          "scipy_iterations": 12,
+          "scipy_evaluations": 19,
+          "signed_loss_difference": 4.320099833421409e-12,
+          "absolute_loss_difference": 4.320099833421409e-12
+        },
+        {
+          "start_index": 15,
+          "initial_parameters": [
+            2.8411164561249,
+            44.150470189655756,
+            99.11420435738525
+          ],
+          "initial_loss": 1363.7720116540545,
+          "jax_parameters": [
+            10.18721093616286,
+            30.24793011922366,
+            57.24275914134386
+          ],
+          "jax_loss": 937.4738139278004,
+          "jax_status": 1,
+          "jax_message": "CONVERGENCE: REL_REDUCTION_OF_F <= FTOL",
+          "jax_iterations": 15,
+          "jax_evaluations": 19,
+          "scipy_parameters": [
+            10.187210308164612,
+            30.247929209698203,
+            57.242767457592876
+          ],
+          "scipy_loss": 937.473813927781,
+          "scipy_status": 0,
+          "scipy_success": true,
+          "scipy_message": "CONVERGENCE: RELATIVE REDUCTION OF F <= FACTR*EPSMCH",
+          "scipy_iterations": 15,
+          "scipy_evaluations": 19,
+          "signed_loss_difference": 1.944044925039634e-11,
+          "absolute_loss_difference": 1.944044925039634e-11
+        },
+        {
+          "start_index": 16,
+          "initial_parameters": [
+            35.414272744876804,
+            17.03791647652242,
+            126.74435148990115
+          ],
+          "initial_loss": 1467.9803663534303,
+          "jax_parameters": [
+            10.18720975917862,
+            30.247921717248857,
+            57.2427059872087
+          ],
+          "jax_loss": 937.4738139277848,
+          "jax_status": 1,
+          "jax_message": "CONVERGENCE: REL_REDUCTION_OF_F <= FTOL",
+          "jax_iterations": 13,
+          "jax_evaluations": 18,
+          "scipy_parameters": [
+            10.187209250531161,
+            30.247921039727885,
+            57.24271269837414
+          ],
+          "scipy_loss": 937.47381392783,
+          "scipy_status": 0,
+          "scipy_success": true,
+          "scipy_message": "CONVERGENCE: RELATIVE REDUCTION OF F <= FACTR*EPSMCH",
+          "scipy_iterations": 13,
+          "scipy_evaluations": 18,
+          "signed_loss_difference": -4.5133674575481564e-11,
+          "absolute_loss_difference": 4.5133674575481564e-11
+        },
+        {
+          "start_index": 17,
+          "initial_parameters": [
+            13.982619048382467,
+            98.98346403572032,
+            10.97853847457566
+          ],
+          "initial_loss": 1022.4239623621038,
+          "jax_parameters": [
+            10.187221771446985,
+            30.247999295625586,
+            57.24269812879681
+          ],
+          "jax_loss": 937.4738139287664,
+          "jax_status": 1,
+          "jax_message": "CONVERGENCE: REL_REDUCTION_OF_F <= FTOL",
+          "jax_iterations": 13,
+          "jax_evaluations": 20,
+          "scipy_parameters": [
+            10.187223243053174,
+            30.248000597664554,
+            57.24272017029338
+          ],
+          "scipy_loss": 937.4738139290188,
+          "scipy_status": 0,
+          "scipy_success": true,
+          "scipy_message": "CONVERGENCE: RELATIVE REDUCTION OF F <= FACTR*EPSMCH",
+          "scipy_iterations": 13,
+          "scipy_evaluations": 20,
+          "signed_loss_difference": -2.523847797419876e-10,
+          "absolute_loss_difference": 2.523847797419876e-10
+        },
+        {
+          "start_index": 18,
+          "initial_parameters": [
+            40.41227745450922,
+            3.76041983352874,
+            186.96553777335183
+          ],
+          "initial_loss": 1508.45749382453,
+          "jax_parameters": [
+            10.18721054966122,
+            30.247980484226115,
+            57.24295333847529
+          ],
+          "jax_loss": 937.4738139287278,
+          "jax_status": 1,
+          "jax_message": "CONVERGENCE: REL_REDUCTION_OF_F <= FTOL",
+          "jax_iterations": 15,
+          "jax_evaluations": 20,
+          "scipy_parameters": [
+            10.187210475767003,
+            30.247980773503453,
+            57.24293679121105
+          ],
+          "scipy_loss": 937.4738139285826,
+          "scipy_status": 0,
+          "scipy_success": true,
+          "scipy_message": "CONVERGENCE: RELATIVE REDUCTION OF F <= FACTR*EPSMCH",
+          "scipy_iterations": 15,
+          "scipy_evaluations": 20,
+          "signed_loss_difference": 1.4529177860822529e-10,
+          "absolute_loss_difference": 1.4529177860822529e-10
+        },
+        {
+          "start_index": 19,
+          "initial_parameters": [
+            16.084748216400463,
+            11.209401220550774,
+            43.81999938490697
+          ],
+          "initial_loss": 1040.583275911204,
+          "jax_parameters": [
+            10.187212359133158,
+            30.247914858349287,
+            57.24272856840569
+          ],
+          "jax_loss": 937.4738139277616,
+          "jax_status": 1,
+          "jax_message": "CONVERGENCE: REL_REDUCTION_OF_F <= FTOL",
+          "jax_iterations": 11,
+          "jax_evaluations": 17,
+          "scipy_parameters": [
+            10.18721287819896,
+            30.247918155312387,
+            57.242726745154606
+          ],
+          "scipy_loss": 937.473813927792,
+          "scipy_status": 0,
+          "scipy_success": true,
+          "scipy_message": "CONVERGENCE: RELATIVE REDUCTION OF F <= FACTR*EPSMCH",
+          "scipy_iterations": 11,
+          "scipy_evaluations": 17,
+          "signed_loss_difference": -3.035438567167148e-11,
+          "absolute_loss_difference": 3.035438567167148e-11
+        },
+        {
+          "start_index": 20,
+          "initial_parameters": [
+            6.828684561624722,
+            30.010646727639386,
+            15.853024123485065
+          ],
+          "initial_loss": 1192.4270659992153,
+          "jax_parameters": [
+            10.187209571871966,
+            30.24792264152151,
+            57.2427540570118
+          ],
+          "jax_loss": 937.4738139278063,
+          "jax_status": 1,
+          "jax_message": "CONVERGENCE: REL_REDUCTION_OF_F <= FTOL",
+          "jax_iterations": 12,
+          "jax_evaluations": 14,
+          "scipy_parameters": [
+            10.187209378157258,
+            30.24792766573852,
+            57.2427201153154
+          ],
+          "scipy_loss": 937.4738139278393,
+          "scipy_status": 0,
+          "scipy_success": true,
+          "scipy_message": "CONVERGENCE: RELATIVE REDUCTION OF F <= FACTR*EPSMCH",
+          "scipy_iterations": 12,
+          "scipy_evaluations": 14,
+          "signed_loss_difference": -3.296918293926865e-11,
+          "absolute_loss_difference": 3.296918293926865e-11
+        },
+        {
+          "start_index": 21,
+          "initial_parameters": [
+            5.2310396615711,
+            2.8561680952301387,
+            29.39080172143144
+          ],
+          "initial_loss": 1509.437364586147,
+          "jax_parameters": [
+            11.557187673664263,
+            4.150606092084687,
+            65.26985504647018
+          ],
+          "jax_loss": 985.8951605619245,
+          "jax_status": 1,
+          "jax_message": "CONVERGENCE: REL_REDUCTION_OF_F <= FTOL",
+          "jax_iterations": 12,
+          "jax_evaluations": 14,
+          "scipy_parameters": [
+            11.557188018967166,
+            4.150606187490176,
+            65.26984294646034
+          ],
+          "scipy_loss": 985.8951605619245,
+          "scipy_status": 0,
+          "scipy_success": true,
+          "scipy_message": "CONVERGENCE: RELATIVE REDUCTION OF F <= FACTR*EPSMCH",
+          "scipy_iterations": 12,
+          "scipy_evaluations": 14,
+          "signed_loss_difference": 0.0,
+          "absolute_loss_difference": 0.0
+        },
+        {
+          "start_index": 22,
+          "initial_parameters": [
+            28.96693672486258,
+            12.73658649771951,
+            22.581013971216755
+          ],
+          "initial_loss": 1215.630044007757,
+          "jax_parameters": [
+            10.18721855071429,
+            30.248396549838052,
+            57.24179354345513
+          ],
+          "jax_loss": 937.473813953389,
+          "jax_status": 1,
+          "jax_message": "CONVERGENCE: REL_REDUCTION_OF_F <= FTOL",
+          "jax_iterations": 14,
+          "jax_evaluations": 18,
+          "scipy_parameters": [
+            10.18721893640027,
+            30.24839647247266,
+            57.24178552900035
+          ],
+          "scipy_loss": 937.473813953389,
+          "scipy_status": 0,
+          "scipy_success": true,
+          "scipy_message": "CONVERGENCE: RELATIVE REDUCTION OF F <= FACTR*EPSMCH",
+          "scipy_iterations": 14,
+          "scipy_evaluations": 18,
+          "signed_loss_difference": 0.0,
+          "absolute_loss_difference": 0.0
+        },
+        {
+          "start_index": 23,
+          "initial_parameters": [
+            17.540876664710783,
+            195.19392170991384,
+            171.22768573187784
+          ],
+          "initial_loss": 1220.4458601956444,
+          "jax_parameters": [
+            6.836788381784694,
+            100.89023590409458,
+            57.18289337265991
+          ],
+          "jax_loss": 960.5874788987159,
+          "jax_status": 1,
+          "jax_message": "CONVERGENCE: REL_REDUCTION_OF_F <= FTOL",
+          "jax_iterations": 10,
+          "jax_evaluations": 13,
+          "scipy_parameters": [
+            6.83678863135519,
+            100.8902366442813,
+            57.18288991667325
+          ],
+          "scipy_loss": 960.5874788987159,
+          "scipy_status": 0,
+          "scipy_success": true,
+          "scipy_message": "CONVERGENCE: RELATIVE REDUCTION OF F <= FACTR*EPSMCH",
+          "scipy_iterations": 10,
+          "scipy_evaluations": 13,
+          "signed_loss_difference": 0.0,
+          "absolute_loss_difference": 0.0
+        },
+        {
+          "start_index": 24,
+          "initial_parameters": [
+            109.8333166310685,
+            7.984691423259157,
+            7.292445840916815
+          ],
+          "initial_loss": 2025.7476655765659,
+          "jax_parameters": [
+            10.187210900116309,
+            30.247894812461293,
+            57.242728337374494
+          ],
+          "jax_loss": 937.473813927774,
+          "jax_status": 1,
+          "jax_message": "CONVERGENCE: REL_REDUCTION_OF_F <= FTOL",
+          "jax_iterations": 15,
+          "jax_evaluations": 24,
+          "scipy_parameters": [
+            10.187212348154732,
+            30.247896419870386,
+            57.24274880101935
+          ],
+          "scipy_loss": 937.473813927774,
+          "scipy_status": 0,
+          "scipy_success": true,
+          "scipy_message": "CONVERGENCE: RELATIVE REDUCTION OF F <= FACTR*EPSMCH",
+          "scipy_iterations": 15,
+          "scipy_evaluations": 24,
+          "signed_loss_difference": 0.0,
+          "absolute_loss_difference": 0.0
+        },
+        {
+          "start_index": 25,
+          "initial_parameters": [
+            51.44117718307996,
+            13.348065660076296,
+            86.23684004731648
+          ],
+          "initial_loss": 1547.2039704088527,
+          "jax_parameters": [
+            10.18720919289995,
+            30.247913170225655,
+            57.242802862031674
+          ],
+          "jax_loss": 937.4738139277977,
+          "jax_status": 1,
+          "jax_message": "CONVERGENCE: REL_REDUCTION_OF_F <= FTOL",
+          "jax_iterations": 14,
+          "jax_evaluations": 19,
+          "scipy_parameters": [
+            10.187209405375258,
+            30.247914684898237,
+            57.24279173464401
+          ],
+          "scipy_loss": 937.4738139277977,
+          "scipy_status": 0,
+          "scipy_success": true,
+          "scipy_message": "CONVERGENCE: RELATIVE REDUCTION OF F <= FACTR*EPSMCH",
+          "scipy_iterations": 14,
+          "scipy_evaluations": 19,
+          "signed_loss_difference": 0.0,
+          "absolute_loss_difference": 0.0
+        },
+        {
+          "start_index": 26,
+          "initial_parameters": [
+            9.60954258354439,
+            9.5691455002335,
+            19.81202898406268
+          ],
+          "initial_loss": 1012.6050419409437,
+          "jax_parameters": [
+            10.187213883374648,
+            30.24789336930022,
+            57.242693419999505
+          ],
+          "jax_loss": 937.4738139278309,
+          "jax_status": 1,
+          "jax_message": "CONVERGENCE: REL_REDUCTION_OF_F <= FTOL",
+          "jax_iterations": 14,
+          "jax_evaluations": 17,
+          "scipy_parameters": [
+            10.187215321813799,
+            30.247895047226123,
+            57.24268524359041
+          ],
+          "scipy_loss": 937.4738139278738,
+          "scipy_status": 0,
+          "scipy_success": true,
+          "scipy_message": "CONVERGENCE: RELATIVE REDUCTION OF F <= FACTR*EPSMCH",
+          "scipy_iterations": 14,
+          "scipy_evaluations": 17,
+          "signed_loss_difference": -4.297362465877086e-11,
+          "absolute_loss_difference": 4.297362465877086e-11
+        },
+        {
+          "start_index": 27,
+          "initial_parameters": [
+            128.81122581536113,
+            22.127748226738813,
+            8.045935045011213
+          ],
+          "initial_loss": 2277.919670571086,
+          "jax_parameters": [
+            10.187210671077864,
+            30.24791548958765,
+            57.24275225543655
+          ],
+          "jax_loss": 937.4738139277616,
+          "jax_status": 1,
+          "jax_message": "CONVERGENCE: REL_REDUCTION_OF_F <= FTOL",
+          "jax_iterations": 16,
+          "jax_evaluations": 20,
+          "scipy_parameters": [
+            10.187210530107437,
+            30.247917357085395,
+            57.242758631001365
+          ],
+          "scipy_loss": 937.4738139277626,
+          "scipy_status": 0,
+          "scipy_success": true,
+          "scipy_message": "CONVERGENCE: RELATIVE REDUCTION OF F <= FACTR*EPSMCH",
+          "scipy_iterations": 16,
+          "scipy_evaluations": 20,
+          "signed_loss_difference": -1.0231815394945443e-12,
+          "absolute_loss_difference": 1.0231815394945443e-12
+        },
+        {
+          "start_index": 28,
+          "initial_parameters": [
+            69.10240675628651,
+            157.72990962905115,
+            27.74379298077844
+          ],
+          "initial_loss": 1744.5906173395865,
+          "jax_parameters": [
+            6.836782336397505,
+            100.89023440773565,
+            57.18275132296575
+          ],
+          "jax_loss": 960.5874788992361,
+          "jax_status": 1,
+          "jax_message": "CONVERGENCE: REL_REDUCTION_OF_F <= FTOL",
+          "jax_iterations": 16,
+          "jax_evaluations": 22,
+          "scipy_parameters": [
+            6.836782053436753,
+            100.89022952477544,
+            57.18275480312093
+          ],
+          "scipy_loss": 960.5874788992664,
+          "scipy_status": 0,
+          "scipy_success": true,
+          "scipy_message": "CONVERGENCE: RELATIVE REDUCTION OF F <= FACTR*EPSMCH",
+          "scipy_iterations": 16,
+          "scipy_evaluations": 22,
+          "signed_loss_difference": -3.035438567167148e-11,
+          "absolute_loss_difference": 3.035438567167148e-11
+        },
+        {
+          "start_index": 29,
+          "initial_parameters": [
+            3.232491988025028,
+            54.747670630474076,
+            71.35553368372611
+          ],
+          "initial_loss": 1184.4294932820987,
+          "jax_parameters": [
+            6.8367325404352925,
+            100.89098270455614,
+            57.18325055041384
+          ],
+          "jax_loss": 960.5874789077717,
+          "jax_status": 1,
+          "jax_message": "CONVERGENCE: REL_REDUCTION_OF_F <= FTOL",
+          "jax_iterations": 15,
+          "jax_evaluations": 20,
+          "scipy_parameters": [
+            6.836732908575145,
+            100.89098072572476,
+            57.18326604708172
+          ],
+          "scipy_loss": 960.587478907969,
+          "scipy_status": 0,
+          "scipy_success": true,
+          "scipy_message": "CONVERGENCE: RELATIVE REDUCTION OF F <= FACTR*EPSMCH",
+          "scipy_iterations": 15,
+          "scipy_evaluations": 20,
+          "signed_loss_difference": -1.972466634470038e-10,
+          "absolute_loss_difference": 1.972466634470038e-10
+        },
+        {
+          "start_index": 30,
+          "initial_parameters": [
+            19.656064681573657,
+            35.82868681625003,
+            46.69347130211274
+          ],
+          "initial_loss": 1114.9543398886344,
+          "jax_parameters": [
+            10.18721251023026,
+            30.247884257844245,
+            57.24278771031205
+          ],
+          "jax_loss": 937.4738139278264,
+          "jax_status": 1,
+          "jax_message": "CONVERGENCE: REL_REDUCTION_OF_F <= FTOL",
+          "jax_iterations": 12,
+          "jax_evaluations": 14,
+          "scipy_parameters": [
+            10.187213406293786,
+            30.24788715721656,
+            57.24278297219443
+          ],
+          "scipy_loss": 937.4738139278264,
+          "scipy_status": 0,
+          "scipy_success": true,
+          "scipy_message": "CONVERGENCE: RELATIVE REDUCTION OF F <= FACTR*EPSMCH",
+          "scipy_iterations": 12,
+          "scipy_evaluations": 14,
+          "signed_loss_difference": 0.0,
+          "absolute_loss_difference": 0.0
+        },
+        {
+          "start_index": 31,
+          "initial_parameters": [
+            182.61979049229538,
+            75.9672758397441,
+            37.28900065061762
+          ],
+          "initial_loss": 2641.562734794628,
+          "jax_parameters": [
+            6.836789769090407,
+            100.89029684415276,
+            57.182867646011935
+          ],
+          "jax_loss": 960.587478898764,
+          "jax_status": 1,
+          "jax_message": "CONVERGENCE: REL_REDUCTION_OF_F <= FTOL",
+          "jax_iterations": 13,
+          "jax_evaluations": 33,
+          "scipy_parameters": [
+            6.836789568042184,
+            100.89029342224651,
+            57.18285256914844
+          ],
+          "scipy_loss": 960.587478898764,
+          "scipy_status": 0,
+          "scipy_success": true,
+          "scipy_message": "CONVERGENCE: RELATIVE REDUCTION OF F <= FACTR*EPSMCH",
+          "scipy_iterations": 13,
+          "scipy_evaluations": 33,
+          "signed_loss_difference": 0.0,
+          "absolute_loss_difference": 0.0
+        }
+      ]
+    }
+  ]
+}

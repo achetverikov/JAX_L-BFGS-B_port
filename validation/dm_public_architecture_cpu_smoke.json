@@ -1,0 +1,44 @@
+{
+  "python": "3.12.3",
+  "jax": "0.10.1.dev20260909",
+  "scipy": "1.17.1",
+  "devices": [
+    "cuda:0"
+  ],
+  "source_model": "public demixing_model MirrorAwareMu1Predictor architecture; deterministic random weights (checkpoint binary unavailable)",
+  "source_files": [
+    "neural_network_optimization/mirror_aware_model.py",
+    "shared/config.py",
+    "shared/mu1_axis.py",
+    "shared/utils.py",
+    "model_fit_to_data/density_objective.py"
+  ],
+  "surface_shape": [
+    180,
+    90
+  ],
+  "conditions": 4,
+  "parameters": 9,
+  "repeats": 1,
+  "maxiter": 20,
+  "rows": [
+    {
+      "dtype": "float32",
+      "n_starts": 1,
+      "compile_s": 2.4732204359970638,
+      "jax_s": 0.10224030700192088,
+      "scipy_s": 0.13900145899970084,
+      "speedup": 1.3595563538075965,
+      "within_1e-5": 0.0,
+      "max_abs_loss_diff": 0.022418558597564697,
+      "jax_eval_mean": 35.0,
+      "scipy_eval_mean": 33.0,
+      "jax_times_s": [
+        0.10224030700192088
+      ],
+      "scipy_times_s": [
+        0.13900145899970084
+      ]
+    }
+  ]
+}

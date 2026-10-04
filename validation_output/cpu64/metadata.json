@@ -1,0 +1,14 @@
+{
+  "python": "3.12.3",
+  "jax": "0.10.1.dev20260909",
+  "jaxlib": "0.10.1.dev20260909",
+  "scipy": "1.17.1",
+  "numpy": "2.4.6",
+  "dtype": "float64",
+  "devices": [
+    "cuda:0"
+  ],
+  "seed": 20260909,
+  "solver_sha256": "178d6c4c80904fe5d2bbb7d5e2c24640d54508b137e8a1dc6c2b571ed8a46741",
+  "cuda_visible": true
+}
