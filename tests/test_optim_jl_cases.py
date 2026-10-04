@@ -1,3 +1,4 @@
+# Cases adapted from Optim.jl's L-BFGS-B tests (MIT); see THIRD_PARTY_NOTICES.md.
 import numpy as np
 import jax
 jax.config.update("jax_enable_x64", True)

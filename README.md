@@ -279,4 +279,8 @@ See `VALIDATION.md` for the current validation summary.
 
 ## License
 
-MIT. See [LICENSE](LICENSE).
+MIT. See [LICENSE](LICENSE). The solver follows L-BFGS-B 3.0 and translates
+the MINPACK-2 More-Thuente line search, and some tests adapt cases from
+Optim.jl. Their notices are in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
+L-BFGS-B's authors ask that publications using this software cite at least one
+of the L-BFGS-B references listed there.
