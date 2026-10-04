@@ -53,6 +53,31 @@ The portable 32-start x 8-problem parity panel on the audited implementation pro
   intentionally near-flat quadratic. JAX is worse by `1.64e-5` on one and
   better by `6.09e-5` on the other; neither implementation failed.
 
+The recorded panel outputs in `validation_output/cpu64/` and
+`validation_output/cpu32/` were regenerated on 2026-10-04 on CPU with the
+current solver (source fingerprint `d016017f…`, JAX 0.10.1.dev20261004) and
+reproduce these figures. Per problem:
+
+| Problem | float64 within `1e-5` | float64 largest difference | float32 within `1e-5` | float32 largest difference | float32 same stopping reason |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| `scaled_quad_2` | 32/32 | `6.9e-22` | 32/32 | `3.5e-13` | 32/32 |
+| `scaled_quad_5` | 32/32 | `4.8e-19` | 32/32 | `3.2e-11` | 30/32 |
+| `scaled_quad_9` | 32/32 | `1.2e-17` | 32/32 | `3.2e-09` | 32/32 |
+| `coupled_5` | 32/32 | `1.4e-17` | 32/32 | `7.5e-09` | 18/32 |
+| `face_edge_corner_4` | 32/32 | `0` | 32/32 | `0` | 31/32 |
+| `flat_direction_5` | 32/32 | `1.7e-13` | 30/32 | `6.1e-05` | 28/32 |
+| `hierarchical_7` | 32/32 | `7.4e-22` | 32/32 | `1.3e-12` | 32/32 |
+| `rosenbrock_2` | 32/32 | `5.9e-19` | 32/32 | `6.3e-12` | 19/32 |
+
+"Same stopping reason" counts starts where both solvers stopped on the same
+test, projected gradient or relative function reduction. In float64 all 256
+starts converged in both solvers, for the same reason and after the same number
+of evaluations. In float32, every JAX start converged, and SciPy converged on
+255. The exception is `coupled_5` start 5, which ended in SciPy's
+`ABNORMAL` line-search status while its loss still matched to within `1e-5`.
+Differing stopping reasons are expected in float32, where the two tests trigger
+at nearly the same step.
+
 Additional audit stress tests covered 144 random coupled positive-definite quadratics with mixtures of two-sided, one-sided, unbounded, and fixed coordinates: **0 failures at `1e-7` loss parity**. Bounded Rosenbrock tests at dimensions 2, 4, 8, and 12 had maximum JAX-vs-SciPy loss differences of approximately `2.6e-20`, `4.4e-16`, `6.8e-13`, and `4.3e-10`, respectively.
 
 ## Optim.jl native L-BFGS-B regression panel
@@ -71,6 +96,11 @@ near-flat quadratic; the largest absolute gap was `6.11e-5`. One coupled
 quadratic start ended with line-search status 4, but its canonical loss differed
 from SciPy by only `7.45e-9`. Running the panel with `maxls=40` removed that
 terminal status without changing the seven flat-direction comparisons.
+
+The per-start output behind these GPU figures is not in the repository. The
+`validation_output/gpu32/` directory was produced by the stale pre-audit solver
+(its `solver.py` hash matches commit `6da679e`), so it does not record this
+result. The GPU panel needs a rerun before these figures have a recorded source.
 
 These float32 misses are relative-function-reduction decisions in a direction
 whose curvature is deliberately tiny. They are retained in the panel because

@@ -1,14 +1,25 @@
 {
   "python": "3.12.3",
-  "jax": "0.10.1.dev20260909",
-  "jaxlib": "0.10.1.dev20260909",
+  "jax": "0.10.1.dev20261004",
+  "jaxlib": "0.10.1.dev20261004",
   "scipy": "1.17.1",
   "numpy": "2.4.6",
   "dtype": "float32",
+  "requested_platform": "cpu",
   "devices": [
-    "cuda:0"
+    "cpu:0"
   ],
   "seed": 20260909,
-  "solver_sha256": "178d6c4c80904fe5d2bbb7d5e2c24640d54508b137e8a1dc6c2b571ed8a46741",
-  "cuda_visible": true
+  "solver_sha256": "d016017f7cba27404b1eadb7abba2ca916b3c9dc54af90c7119533d5edca6762",
+  "solver_sources": [
+    "src/jax_lbfgsb/__init__.py",
+    "src/jax_lbfgsb/core.py",
+    "src/jax_lbfgsb/line_search.py",
+    "src/jax_lbfgsb/solver.py"
+  ],
+  "benchmark_sha256": "df50f94eaa565c79f33ab4ce236bb419e912747a297efa53c69d107e4a8fae5a",
+  "benchmark_utils_sha256": "86c72bb967f3c887951f67b4da5a0d774ac6c34a00eeed8b86a8abb09c34eb68",
+  "ftol": 2.220446049250313e-09,
+  "maxls": 20,
+  "cuda_visible": false
 }

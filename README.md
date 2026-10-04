@@ -153,6 +153,35 @@ Empirical fitted-model parity still needs to be run in the DM environment.
 
 ## Validation and benchmarks
 
+### Parity with SciPy L-BFGS-B
+
+Each benchmark runs every start through both this solver and
+`scipy.optimize.minimize(method="L-BFGS-B")` with the same starting point,
+bounds and tolerances, then compares the final losses start by start.
+
+| Benchmark | Device | Search dtype | Starts within `1e-5` of SciPy | Largest per-start loss difference | Best loss, JAX − SciPy | Record |
+| --- | --- | --- | ---: | ---: | ---: | --- |
+| Portable panel: 8 problems × 32 starts | CPU | float64 | 256/256 | `1.7e-13` | n/a | `validation_output/cpu64/` |
+| Portable panel: 8 problems × 32 starts | CPU | float32 | 254/256 | `6.1e-05` | n/a | `validation_output/cpu32/` |
+| DM WNM likelihood: 1 subject × 32 starts | CPU | float64 | 32/32 | `5e-09` | `0` | `validation/dm_wnm_likelihood_cpu64.json` |
+| DM WNM likelihood: 1 subject × 32 starts | GPU | float64 | 32/32 | `2.1e-08` | `1.7e-12` | `validation/dm_wnm_likelihood_gpu64.json` |
+| DM WNM likelihood: 1 subject × 32 starts | CPU | float32 | 28/32 | `7.7e-05` | `-9.5e-10` | `validation/dm_wnm_likelihood_cpu32.json` |
+| DM WNM likelihood: 1 subject × 32 starts | GPU | float32 | 1/32 | `80` | `-8.1e-05` | `validation/dm_wnm_likelihood_gpu32.json` |
+
+- Loss differences are absolute. Float32 WNM endpoints are compared after
+  rescoring in float64; WNM losses are about 937, so `1e-5` is roughly
+  `1e-8` relative.
+- Both float32 portable-panel misses are on the deliberately near-flat
+  quadratic: JAX is `1.6e-05` worse on one start and `6.1e-05` better on the
+  other. Per-problem results are in [VALIDATION.md](VALIDATION.md#audited-cpu-results).
+- On GPU in float32, individual starts follow different paths than SciPy
+  (float32 reduction order differs). JAX ended more than `1e-3` lower on 28
+  pairs and SciPy on 1. The best losses still agree to `8.1e-05`, with JAX lower.
+  In float64 the paths match.
+- The GPU portable panel has no current record: the previously recorded
+  `validation_output/gpu32/` was produced by the solver that the 2026-09-09
+  audit replaced, and needs a rerun.
+
 ### Per-start SciPy parity
 
 ```bash
@@ -247,3 +276,7 @@ recovery panel or the other objective-specific searches, so it is not by itself
 a production-readiness claim.
 
 See `VALIDATION.md` for the current validation summary.
+
+## License
+
+MIT. See [LICENSE](LICENSE).
