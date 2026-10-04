@@ -40,8 +40,14 @@ python -m pip install -e .
 If you already have a working JAX/CUDA environment, activate it and use the
 editable install command directly. The package does not select a CUDA version
 or install CUDA extras; use your environment's compatible JAX accelerator
-installation. The sibling DM checkout is needed only for the DM integration
-benchmarks, not for the solver or quick start.
+installation.
+
+The solver, quick start and test suite need nothing else. Some benchmarks refer
+to **DM**, the [Demixing Model](https://github.com/achetverikov/demixing_model):
+a model of attraction and repulsion biases between two remembered items, whose
+behavioral fits were the motivating workload for this port. Only the
+[DM WNM likelihood benchmark](#dm-wnm-likelihood) requires a DM checkout, which
+it expects next to this repository (`../demixing_model`).
 
 ## Quick start
 
@@ -121,14 +127,17 @@ python -m pip install -e '.[test]'
 JAX_PLATFORMS=cpu pytest -q
 ```
 
+The tests need only this package, pytest and SciPy; they do not import DM.
 On a configured CUDA machine, run `JAX_PLATFORMS=cuda pytest -q` separately.
 The test configuration enables float64. Validation includes the native test
 suite plus cases adapted from Optim.jl's L-BFGS-B tests. Run GPU checks one at
 a time, and put temporary benchmark outputs and caches under `/tmp`.
 
-## Hierarchical objectives / DM shape
+## Hierarchical objectives
 
-The solver is agnostic to a `2*C + 1` vector such as
+The solver is agnostic to parameter structure. DM fits, for example, use a
+`2*C + 1` vector for `C` experimental conditions, with two per-condition noise
+parameters and one shared one:
 
 ```text
 [sd_feat1_1, sd_feat2_1, ..., sd_feat1_C, sd_feat2_C, sd_spat_shared]
@@ -136,11 +145,11 @@ The solver is agnostic to a `2*C + 1` vector such as
 
 Put condition logic and masks in the objective payload and use a condition-mean loss; autodiff then accumulates all condition contributions into the shared parameter. The test suite includes a synthetic hierarchical recovery case.
 
-The core package does not depend on `demixing_model`. A separate benchmark
-reproduces the public DM surface-network architecture and density objective as a
-workload proxy. It can optionally load a trusted `MirrorAwareMu1Predictor`
-checkpoint. Empirical fitted-model parity still needs to be run in the DM
-environment.
+The core package does not depend on DM. A separate benchmark reimplements DM's
+public surface-network architecture and density objective as a workload proxy,
+so it runs without a DM checkout. It can optionally load a trusted
+`MirrorAwareMu1Predictor` checkpoint (a pickle, so load only files you trust).
+Empirical fitted-model parity still needs to be run in the DM environment.
 
 ## Validation and benchmarks
 
@@ -200,11 +209,15 @@ For the current DM network, avoid a monolithic 32-start accelerator batch; use
 `--jax-batch-size 1` (or benchmark other small chunk sizes) to reuse the compiled
 solver without the large batched-gradient temporary allocation.
 
-### Actual DM WNM likelihood
+### DM WNM likelihood
 
-The integration benchmark uses the packaged K12 WNM, a frozen actual-DM
-recovery dataset, the WNM point-likelihood evaluator, its artifact bounds, and
-the selected 32 deterministic log-space Latin-hypercube starts:
+This integration benchmark requires a DM checkout and imports its code. DM's
+fitted predictor is a conditional wrapped-normal mixture (WNM): a neural network
+that maps noise parameters to a 12-component (K12) mixture density over
+response errors. The benchmark uses the packaged K12 WNM, a fixed
+parameter-recovery dataset simulated from DM, DM's WNM point-likelihood
+evaluator and parameter bounds, and the 32 deterministic log-space
+Latin-hypercube starts used for those recovery fits:
 
 ```bash
 PYTHONPATH=src python benchmarks/dm_wnm_likelihood.py \

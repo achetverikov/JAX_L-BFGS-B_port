@@ -2,8 +2,23 @@
 
 The task requires genuine L-BFGS-B structure, per-start SciPy comparison,
 hierarchical support, and explicit separation of CPU/GPU/DM validation. Portable
-CPU/GPU validation is covered here, along with one real subject-target WNM
-likelihood integration case.
+CPU/GPU validation is covered here, along with one integration case that fits a
+single simulated subject with DM's WNM likelihood.
+
+Terms used below:
+
+- **DM** is the [Demixing Model](https://github.com/achetverikov/demixing_model),
+  a model of attraction and repulsion biases between two remembered items. Its
+  behavioral fits are the workload that motivated this port. The solver and
+  test suite do not depend on it.
+- **WNM** is DM's fitted predictor: a neural network that maps noise parameters
+  to a conditional wrapped-normal mixture density over response errors. **K12**
+  means 12 mixture components.
+- **Actual-DM** benchmarks import DM's own code and checkpoints from a sibling
+  checkout. The **public-DM-architecture** benchmark instead reimplements DM's
+  network and objective inside this repository, so it runs without DM.
+- A **recovery dataset** is data simulated from DM with known parameters, used
+  to check that a fit recovers them.
 
 ## Repository parity audit (2026-09-09)
 
@@ -69,7 +84,8 @@ The public-DM-architecture benchmark is a synthetic-target compute proxy. It can
 use either deterministic random weights or a trusted trained surface-network
 checkpoint. Its checkpoint forward pass and density collapse were checked
 against DM's implementations, including edge-padded Gaussian smoothing. With
-the production 20-observation checkpoint, a one-start float64 GPU run matched
+the production checkpoint trained on 20 internal evidence samples per simulated
+trial, a one-start float64 GPU run matched
 SciPy to `2.97e-13` loss and 46 iterations (104 versus 101 evaluations).
 Float32 can follow a different path through this nonconvex objective, so its
 endpoint gap is not used as the portable solver-parity criterion. See
@@ -77,9 +93,12 @@ endpoint gap is not used as the portable solver-parity criterion. See
 
 ## Actual-DM WNM likelihood integration
 
-`benchmarks/dm_wnm_likelihood.py` uses the packaged 100-observation K12 WNM and
-the frozen `ordinary_1_seed0_n450` actual-DM recovery dataset. It reproduces the
-recovery selection: WNM continuous point NLL, artifact bounds, float32 search,
+`benchmarks/dm_wnm_likelihood.py` requires a DM checkout. It uses DM's packaged
+K12 WNM checkpoint for 100 internal evidence samples per simulated trial
+(`current_wnm_k12_100samples.pkl`) and the frozen simulated subject
+`ordinary_1_seed0_n450` from DM's recovery dataset. It reproduces the search
+settings selected for DM's recovery fits: WNM continuous point negative
+log-likelihood (NLL), DM's parameter bounds, float32 search,
 seed-0 deterministic log-space Latin-hypercube starts, 32 starts, 500
 iterations, `ftol=1e-9`, and `gtol=1e-6`. Failed-status finite points remain in
 the diagnostics, as in the recovery protocol.
@@ -117,7 +136,7 @@ search; they do not change the recovery project's selected float32 search.
 
 Extend the likelihood check across the frozen development cases, trial counts,
 and generating regimes before claiming panel-level WNM equivalence. Validate
-the other objectives against their selected searches rather than imposing one
+DM's other fitting objectives against their selected searches rather than imposing one
 universal 32-start comparison: bias-weighted CRPS uses 32-start serial L-BFGS-B,
 density uses the reusable 80-by-64 log-curve cache plus one polish, and smoothed
 expectation uses that cache with multiple distinct polishes and a conditional
